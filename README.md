@@ -1,7 +1,7 @@
 Baka Punk
 =========
 
-A tool for finding similar songs in your library. Similarity is based on BPM and key.
+A tool for finding similar songs in your music library. Similarity is based on BPM and key.
 This is primarily a tool for DJs and requires:
 
 - A MP3 music collection. 
