@@ -12,6 +12,8 @@ This is primarily a tool for DJs and requires:
 Setup
 -----
 
+Install Node.js and npm. Clone this repo and run `npm install` inside to download the dependencies.
+
 Create a file called `music_dir.txt` which contains the path to your music library e.g. /Users/BakaPunk/Music.
 Run `node process.js` to scan your music and save it into `db.json`. This can take a while to complete.
 Files are identified by their path e.g. Baka Punk/Mashups/diSONICted.mp3.
