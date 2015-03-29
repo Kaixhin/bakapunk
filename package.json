@@ -1,0 +1,19 @@
+{
+  "name": "bakapunk",
+  "version": "0.1.0",
+  "description": "A tool for finding similar songs in your music library",
+  "main": "index.js",
+  "dependencies": {
+    "lokijs": "^1.2.3",
+    "musicmetadata": "^1.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "music"
+  ],
+  "author": "Kaixhin <design@kaixhin.com>",
+  "license": "ISC"
+}
