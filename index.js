@@ -30,7 +30,7 @@ var findSongs = function(song, collection) {
   // First create a ResultSet filtered by BPM
   var results = collection.chain().find({bpm: {$gte: song.bpm - 5}}).find({bpm: {$lte: song.bpm + 5}}).copy();
   // Add distance metric based on BPM
-  results.update(function(obj) {console.log(obj.bpm);obj.dist = Math.abs(song.bpm - obj.bpm);return;});
+  results.update(function(obj) {obj.dist = Math.abs(song.bpm - obj.bpm);return;});
   // Add distance metric based on key
   var filtFn = keyFilt(song);
   results.update(filtFn);
