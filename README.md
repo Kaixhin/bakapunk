@@ -26,4 +26,10 @@ Usage
 
 Run `node .`. You will be prompted to enter part of a title to search (case-insensitive).
 If there are any matches you will be prompted to enter the index corresponding to the correct song.
-The "best" (max 30) matches will then be returned.
+The "best" (max 50) matches will then be returned.
+
+Todo
+----
+
+- Page up and down of all results
+- Search weighted on needing to go up or down in BPM

@@ -6,7 +6,7 @@ var keyDist = function(a, b) {
   // Convert to radians
   a = a * Math.PI / 6;
   b = b * Math.PI / 6;
-  return 2 * Math.sqrt(Math.pow(Math.cos(a) - Math.cos(b), 2) + Math.pow(Math.sin(a) - Math.sin(b), 2));
+  return Math.sqrt(Math.pow(Math.cos(a) - Math.cos(b), 2) + Math.pow(Math.sin(a) - Math.sin(b), 2));
 };
 
 // Functional for key distance (ignoring minor/major)
@@ -15,7 +15,7 @@ var keyFilt = function(song) {
   var fn = function(obj) {
     // If no key, add 2
     if (!obj.key) {
-      obj.dist += 2;
+      obj.dist += 1;
     } else {
       var oKey = Number(obj.key.replace("m", ""));
       obj.dist += keyDist(key, oKey);
@@ -34,8 +34,8 @@ var findSongs = function(song, collection) {
   // Add distance metric based on key
   var filtFn = keyFilt(song);
   results.update(filtFn);
-  // Sort by distance, remove the queried song (assumed first) and return at most 30 results
-  var songs = results.simplesort("dist").offset(1).limit(30).data();
+  // Sort by distance and return at most 50 results
+  var songs = results.simplesort("dist").limit(50).data();
   // Display results
   if (songs.length === 0) {
     console.log("No suggestions.");
