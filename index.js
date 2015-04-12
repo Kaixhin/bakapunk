@@ -1,5 +1,6 @@
 var loki = require("lokijs");
 var readline = require("readline");
+require("colors");
 
 // Distance metric based on key (ignoring minor/major)
 var keyDist = function(a, b) {
@@ -40,8 +41,17 @@ var findSongs = function(song, collection) {
   if (songs.length === 0) {
     console.log("No suggestions.");
   } else {
+    var bpmColor = "";
     for (var i = 0; i < songs.length; i++) {
-      console.log("[" + i + "]", songs[i].artist, "-", songs[i].title, "(" + songs[i].dist + ")");
+      if (songs[i].bpm > song.bpm) {
+        bpmColor = "green";
+      } else if (songs[i].bpm < song.bpm) {
+        bpmColor = "red";
+      } else {
+        bpmColor = "grey";
+      }
+      console.log("[" + i + "]", songs[i].artist.blue, "-", songs[i].title.blue, "(" + songs[i].dist + ") |",
+                  "BPM:"[bpmColor], songs[i].bpm.toString()[bpmColor], "|", "KEY:".cyan, songs[i].key.cyan);
     }
   }
 };
@@ -66,7 +76,7 @@ db.loadDatabase({}, function() {
       return console.log("No matches found. Cancelled.");
     }
     for (var i = 0; i < songs.length; i++) {
-      console.log("[" + i + "]", songs[i].artist, "-", songs[i].title);
+      console.log("[" + i + "]", songs[i].artist.blue, "-", songs[i].title.blue);
     }
     // Confirm song
     rl.resume();
