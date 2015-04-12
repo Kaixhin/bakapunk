@@ -50,8 +50,12 @@ var findSongs = function(song, collection) {
       } else {
         bpmColor = "grey";
       }
-      console.log("[" + i + "]", "BPM:"[bpmColor], songs[i].bpm.toString()[bpmColor], "|", "KEY:".cyan, songs[i].key.cyan,
+      // Do not print out if no title
+      if (songs[i].title) {
+        var defKey = songs[i].key || "";
+        console.log("[" + i + "]", "BPM:"[bpmColor], songs[i].bpm.toString()[bpmColor], "|", "KEY:".cyan, defKey.cyan,
                   "|", songs[i].artist.blue, "-", songs[i].title.blue);
+      }
     }
   }
 };
