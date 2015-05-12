@@ -8,7 +8,7 @@ This is primarily a tool for DJs and requires:
 - A structure of artist/album/songs.
 - BPM and key tags.
 - Keys tagged according to the Mixed In Key [Camelot Wheel](http://www.mixedinkey.com/Book/How-to-Use-Harmonic-Mixing-2).
-- [Musly]()
+- [Musly](http://www.musly.org/).
 
 Setup
 -----
