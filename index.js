@@ -1,6 +1,11 @@
+var fs = require("fs");
+var spawn = require('child_process').spawn;
 var loki = require("lokijs");
 var readline = require("readline");
 require("colors");
+
+// Music directory
+var MUSIC_DIR = fs.readFileSync("music_dir.txt", {encoding: "utf8"});
 
 // Distance metric based on key (ignoring minor/major)
 var keyDist = function(a, b) {
@@ -26,8 +31,58 @@ var keyFilt = function(song) {
   return fn;
 };
 
+var muslySearch = function(song, collection, callback) {
+  var NUM_SONGS = 50;
+  var data = "";
+  var child = spawn('musly', ['-k', NUM_SONGS, '-p', MUSIC_DIR + '/' + song.id]);
+  // Error handling
+  child.stderr.on('data', function(err) {
+    console.log(err.toString('utf-8'));
+  });
+  // Collect data
+  child.stdout.on('data', function(chunk) {
+    data += chunk.toString('utf-8');
+  });
+  // Close connection
+  child.on('close', function() {
+    // Extract 50 songs
+    data = data.split("\n");
+    data = data.slice(data.length - (NUM_SONGS + 1), -1);
+    var songs = [];
+    for (var i = 0; i < data.length; i++) {
+      var foundSong = collection.findOne({id: data[i].replace(MUSIC_DIR + '/', '')});
+      // Push if song found (may not be in db for some reason)
+      if (foundSong) {
+        songs.push(foundSong);
+      }
+    }
+    callback(song, songs);
+  });
+};
+
+var printSongs = function(song, songs) {
+  var bpmColor = "";
+  for (var i = 0; i < songs.length; i++) {
+    if (songs[i].bpm > song.bpm) {
+      bpmColor = "green";
+    } else if (songs[i].bpm < song.bpm) {
+      bpmColor = "red";
+    } else {
+      bpmColor = "grey";
+    }
+    // Do not print out if no title
+    if (songs[i].title) {
+      var defKey = songs[i].key || "";
+      console.log("[" + i + "]", "BPM:"[bpmColor], songs[i].bpm.toString()[bpmColor], "|", "KEY:".cyan, defKey.cyan,
+                "|", songs[i].artist.blue, "-", songs[i].title.blue);
+    }
+  }
+};
+
 // Find similar songs
 var findSongs = function(song, collection) {
+  // Search musly
+  muslySearch(song, collection, printSongs);
   // First create a ResultSet filtered by BPM
   var results = collection.chain().find({bpm: {$gte: song.bpm - 5}}).find({bpm: {$lte: song.bpm + 5}}).copy();
   // Add distance metric based on BPM
@@ -40,23 +95,10 @@ var findSongs = function(song, collection) {
   // Display results
   if (songs.length === 0) {
     console.log("No suggestions.");
+    console.log("Waiting for musly...");
   } else {
-    var bpmColor = "";
-    for (var i = 0; i < songs.length; i++) {
-      if (songs[i].bpm > song.bpm) {
-        bpmColor = "green";
-      } else if (songs[i].bpm < song.bpm) {
-        bpmColor = "red";
-      } else {
-        bpmColor = "grey";
-      }
-      // Do not print out if no title
-      if (songs[i].title) {
-        var defKey = songs[i].key || "";
-        console.log("[" + i + "]", "BPM:"[bpmColor], songs[i].bpm.toString()[bpmColor], "|", "KEY:".cyan, defKey.cyan,
-                  "|", songs[i].artist.blue, "-", songs[i].title.blue);
-      }
-    }
+    printSongs(song, songs);
+    console.log("Waiting for musly...");
   }
 };
 

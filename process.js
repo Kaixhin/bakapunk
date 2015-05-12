@@ -1,4 +1,5 @@
 var fs = require("fs");
+var spawn = require('child_process').spawn;
 var loki = require("lokijs");
 var mm = require("musicmetadata");
 
@@ -70,7 +71,10 @@ db.loadDatabase({}, function() {
               var id = artist + "/" + album + "/" + song;
               // If ID does not exist already insert song
               if (!music.findOne({id: id})) {
+                // Insert into db.json
                 parseSong(id, music);
+                // Insert into collection.musly
+                spawn('musly', ['-a', MUSIC_DIR + '/' + id]);
               }
             }
           }
