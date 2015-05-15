@@ -33,6 +33,5 @@ The "best" (max 50) matches will then be returned.
 Todo
 ----
 
-- Fix adding new tracks to musly
 - Page up and down of all results
 - Search weighted on needing to go up or down in BPM
