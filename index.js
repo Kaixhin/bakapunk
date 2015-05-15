@@ -72,8 +72,10 @@ var printSongs = function(song, songs) {
     }
     // Do not print out if no title
     if (songs[i].title) {
-      var defKey = songs[i].key || "";
-      console.log("[" + i + "]", "BPM:"[bpmColor], songs[i].bpm.toString()[bpmColor], "|", "KEY:".cyan, defKey.cyan,
+      var defBpm = songs[i].bpm || "?";
+      defBpm = defBpm.toString();
+      var defKey = songs[i].key || "?";
+      console.log("[" + i + "]", "BPM:"[bpmColor], defBpm[bpmColor], "|", "KEY:".cyan, defKey.cyan,
                 "|", songs[i].artist.blue, "-", songs[i].title.blue);
     }
   }
