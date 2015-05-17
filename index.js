@@ -2,6 +2,7 @@ var fs = require("fs");
 var spawn = require('child_process').spawn;
 var loki = require("lokijs");
 var readline = require("readline");
+var columnify = require("columnify");
 require("colors");
 
 // Music directory
@@ -32,7 +33,7 @@ var keyFilt = function(song) {
 };
 
 var muslySearch = function(song, collection, callback) {
-  var NUM_SONGS = 100;
+  var NUM_SONGS = 150;
   var data = "";
   var child = spawn('musly', ['-k', NUM_SONGS, '-p', MUSIC_DIR + '/' + song.id]);
   // Error handling
@@ -60,6 +61,7 @@ var muslySearch = function(song, collection, callback) {
 };
 
 var printSongs = function(song, songs) {
+  var printArray = [];
   var bpmColor = "";
   for (var i = 0; i < songs.length; i++) {
     if (songs[i].bpm > song.bpm) {
@@ -74,10 +76,16 @@ var printSongs = function(song, songs) {
       var defBpm = songs[i].bpm || "?";
       defBpm = defBpm.toString();
       var defKey = songs[i].key || "?";
-      console.log("[" + i + "]", "BPM:"[bpmColor], defBpm[bpmColor], "|", "KEY:".cyan, defKey.cyan,
-                "|", songs[i].artist.blue, "-", songs[i].title.blue);
+      printArray.push({
+        no: songs.length - i,
+        bpm: defBpm[bpmColor],
+        key: defKey.cyan,
+        artist: songs[i].artist.blue,
+        title: songs[i].title.blue
+      });
     }
   }
+  console.log(columnify(printArray, {columnSplitter: " | "}));
 };
 
 // Find similar songs
@@ -89,8 +97,8 @@ var findSongs = function(song, collection) {
     // Add distance metric based on key
     var filtFn = keyFilt(song);
     results.update(filtFn);
-    // Sort by distance and return results
-    var songs = results.simplesort("dist").data();
+    // Sort by distance (descending) and return results
+    var songs = results.simplesort("dist", true).data();
     // Display results
     printSongs(song, songs);
   });

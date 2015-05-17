@@ -1,11 +1,12 @@
 {
   "name": "bakapunk",
-  "version": "0.1.2",
+  "version": "0.2.1",
   "description": "A tool for finding similar songs in your music library",
   "main": "index.js",
   "dependencies": {
-    "colors": "^1.0.3",
-    "lokijs": "^1.2.3",
+    "colors": "^1.1.0",
+    "columnify": "^1.5.1",
+    "lokijs": "^1.2.5",
     "musicmetadata": "^1.0.1"
   },
   "devDependencies": {},
