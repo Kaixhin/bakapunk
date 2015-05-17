@@ -32,7 +32,7 @@ var keyFilt = function(song) {
 };
 
 var muslySearch = function(song, collection, callback) {
-  var NUM_SONGS = 50;
+  var NUM_SONGS = 100;
   var data = "";
   var child = spawn('musly', ['-k', NUM_SONGS, '-p', MUSIC_DIR + '/' + song.id]);
   // Error handling
@@ -48,15 +48,14 @@ var muslySearch = function(song, collection, callback) {
     // Extract 50 songs
     data = data.split("\n");
     data = data.slice(data.length - (NUM_SONGS + 1), -1);
-    var songs = [];
+    // Create list of IDs
+    var songIDs = [];
     for (var i = 0; i < data.length; i++) {
-      var foundSong = collection.findOne({id: data[i].replace(MUSIC_DIR + '/', '')});
-      // Push if song found (may not be in db for some reason)
-      if (foundSong) {
-        songs.push(foundSong);
-      }
+      songIDs.push(data[i].replace(MUSIC_DIR + '/', ''));
     }
-    callback(song, songs);
+    // Create ResultSet
+    var results = collection.chain().find({id: {$in: songIDs}}).copy();
+    callback(song, results);
   });
 };
 
@@ -84,24 +83,19 @@ var printSongs = function(song, songs) {
 // Find similar songs
 var findSongs = function(song, collection) {
   // Search musly
-  muslySearch(song, collection, printSongs);
-  // First create a ResultSet filtered by BPM
-  var results = collection.chain().find({bpm: {$gte: song.bpm - 5}}).find({bpm: {$lte: song.bpm + 5}}).copy();
-  // Add distance metric based on BPM
-  results.update(function(obj) {obj.dist = Math.abs(song.bpm - obj.bpm);return;});
-  // Add distance metric based on key
-  var filtFn = keyFilt(song);
-  results.update(filtFn);
-  // Sort by distance and return at most 50 results
-  var songs = results.simplesort("dist").limit(50).data();
-  // Display results
-  if (songs.length === 0) {
-    console.log("No suggestions.");
-    console.log("Waiting for musly...");
-  } else {
+  muslySearch(song, collection, function(song, results) {
+    // Add distance metric based on BPM
+    results.update(function(obj) {obj.dist = Math.abs(song.bpm - obj.bpm);return;});
+    // Add distance metric based on key
+    var filtFn = keyFilt(song);
+    results.update(filtFn);
+    // Sort by distance and return results
+    var songs = results.simplesort("dist").data();
+    // Display results
     printSongs(song, songs);
-    console.log("Waiting for musly...");
-  }
+  });
+  // First create a ResultSet filtered by BPM
+  //var results = collection.chain().find({bpm: {$gte: song.bpm - 5}}).find({bpm: {$lte: song.bpm + 5}}).copy();
 };
 
 // Create readline interface
