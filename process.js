@@ -1,5 +1,6 @@
 var fs = require("fs");
-var spawn = require('child_process').spawn;
+var spawn = require("child_process").spawn;
+var _ = require("lodash");
 var loki = require("lokijs");
 var mm = require("musicmetadata");
 
@@ -40,6 +41,12 @@ var parseSong = function(id, collection) {
   });
 };
  
+var musly = function(id) {
+  spawn('musly', ['-a', MUSIC_DIR + '/' + id]);
+};
+// Throttle to prevent running out of threads
+musly = _.throttle(musly, 5);
+
 var db = new loki("db.json");
 // Load existing database if it exists
 db.loadDatabase({}, function() {
@@ -74,7 +81,7 @@ db.loadDatabase({}, function() {
                 // Insert into db.json
                 parseSong(id, music);
                 // Insert into collection.musly
-                spawn('musly', ['-a', MUSIC_DIR + '/' + id]);
+                musly(id);
               }
             }
           }
