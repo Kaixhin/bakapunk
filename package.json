@@ -1,13 +1,13 @@
 {
   "name": "bakapunk",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "A tool for finding similar songs in your music library",
   "main": "index.js",
   "dependencies": {
     "colors": "^1.1.2",
     "columnify": "^1.5.2",
     "lodash": "^3.10.1",
-    "lokijs": "^1.3.9",
+    "lokijs": "^1.3.10",
     "musicmetadata": "^2.0.0"
   },
   "devDependencies": {},
@@ -15,7 +15,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "music"
+    "music",
+    "DJ"
   ],
   "author": "Kaixhin <design@kaixhin.com>",
   "license": "ISC"
