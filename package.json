@@ -5,10 +5,10 @@
   "main": "index.js",
   "dependencies": {
     "colors": "^1.1.2",
-    "columnify": "^1.5.2",
-    "lodash": "^3.10.1",
-    "lokijs": "^1.3.10",
-    "musicmetadata": "^2.0.0"
+    "columnify": "^1.5.4",
+    "lodash": "^4.0.0",
+    "lokijs": "^1.3.11",
+    "musicmetadata": "^2.0.2"
   },
   "devDependencies": {},
   "scripts": {
